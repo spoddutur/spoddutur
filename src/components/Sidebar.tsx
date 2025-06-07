@@ -1,7 +1,7 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { HomeIcon, BookOpenIcon, TagIcon, ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
-import { blogPosts } from '../data/blogs';
+import { blogPosts, BlogPost } from '../data/blogs';
 
 interface SidebarProps {
   isCollapsed: boolean;
@@ -10,9 +10,18 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
   const location = useLocation();
+  const navigate = useNavigate();
+  
   const isActive = (path: string) => {
     return location.pathname === path;
   };
+
+  const handleTagClick = (tag: string) => {
+    navigate(`/blogs?tag=${encodeURIComponent(tag)}`);
+  };
+
+  // Get unique tags from all blog posts
+  const allTags = Array.from(new Set(blogPosts.flatMap((post: BlogPost) => post.tags)));
 
   return (
     <div className="h-full flex flex-col relative">
@@ -70,7 +79,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
               Recent Posts
             </h2>
             <div className="mt-2 space-y-1">
-              {blogPosts.slice(0, 5).map(post => (
+              {blogPosts.slice(0, 5).map((post: BlogPost) => (
                 <Link
                   key={post.id}
                   to={`/blog/${post.id}`}
@@ -90,14 +99,15 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
               Topics
             </h2>
             <div className="mt-2 flex flex-wrap gap-2">
-              {['GPT-4', 'LLMs', 'Prompt Engineering', 'Ethics', 'Applications'].map(tag => (
-                <span
+              {allTags.map((tag: string) => (
+                <button
                   key={tag}
-                  className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800"
+                  onClick={() => handleTagClick(tag)}
+                  className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 hover:bg-gray-200 transition-colors"
                 >
                   <TagIcon className="mr-1 h-3 w-3" />
                   {tag}
-                </span>
+                </button>
               ))}
             </div>
           </div>
