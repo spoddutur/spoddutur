@@ -1,11 +1,13 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { HashRouter, Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
 import Home from './pages/Home';
 import BlogList from './pages/BlogList';
 import BlogPost from './pages/BlogPost';
+
 export function App() {
-  return <BrowserRouter>
+  return (
+    <HashRouter>
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
@@ -13,5 +15,6 @@ export function App() {
           <Route path="blog/:id" element={<BlogPost />} />
         </Route>
       </Routes>
-    </BrowserRouter>;
+    </HashRouter>
+  );
 }
